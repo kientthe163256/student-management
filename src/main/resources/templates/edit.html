@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit student information</title>
+</head>
+<body>
+<a href="/student">Back to home</a>
+<h1>Edit student info</h1>
+<form action="#" th:action="@{/student/edit/{id}(id=${student.getId()})}" th:object="${student}" method="post">
+    <input type="text" name="id" th:value="*{id}" readonly><br>
+    <input type="text" name="firstname" placeholder="Enter first name" th:value="*{firstname}"><br>
+    <span th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">Full name error</span><br>
+    <input type="text" name="lastname" placeholder="Enter last name" th:value="*{lastname}"><br>
+    <span th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Last name error</span><br>
+    <input type="number" name="age" placeholder="Enter age" th:value="*{age}"><br>
+    <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</span><br>
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

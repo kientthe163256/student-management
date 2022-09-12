@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:form="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Add or edit</title>
+</head>
+<body>
+  <form:form action="/student/add" form:method="post" th:object="${student}">
+        StudentID: <form:input path="id"/><form:errors path="id"/>
+        First Name: <form:input path="firstname"/><form:errors path="firstname"/>
+        Last Name: <form:input path="lastname"/><form:errors path="lastname"/>
+        Age: <form:input path="age"/><form:errors path="age"/>
+      <form:button>Save</form:button>
+  </form:form>
+</body>
+</html>
