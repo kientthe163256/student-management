@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Class</title>
+</head>
+<body>
+<table border="1px">
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>Classroom</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="student : ${studentList}">
+        <td th:text="*{student.id}"></td>
+        <td th:text="*{student.firstname}"></td>
+        <td th:text="*{student.lastname}"></td>
+        <td th:text="*{student.age}"></td>
+        <td th:text="${student.getClassroom().getClassName()}"></td>
+        <td>
+            <a th:href="@{/student/edit/{id}(id=${student.getId()})}">Edit</a>
+            <a th:href="@{/student/delete/{id}(id=${student.getId()})}">Delete</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

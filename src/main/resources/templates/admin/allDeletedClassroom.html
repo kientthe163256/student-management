@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All deleted classroom</title>
+</head>
+<body>
+<a href="/student">Back to home</a>
+<div th:if="${message}">
+    <span th:text="${message}"></span>
+</div>
+<table border="1px">
+    <tr>
+        <th>ID</th>
+        <th>ClassName</th>
+        <th>Description</th>
+    </tr>
+    <tr th:each="classroom : ${classroomList}">
+        <td th:text="*{classroom.id}"></td>
+        <td th:text="*{classroom.className}"></td>
+        <td th:text="*{classroom.description}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

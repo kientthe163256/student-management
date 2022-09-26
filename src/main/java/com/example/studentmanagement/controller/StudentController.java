@@ -1,10 +1,17 @@
 package com.example.studentmanagement.controller;
 
+import com.example.studentmanagement.entity.Classroom;
 import com.example.studentmanagement.entity.Student;
 import com.example.studentmanagement.repository.StudentRepo;
+import com.example.studentmanagement.response.StudentResponse;
+import com.example.studentmanagement.service.ClassroomService;
 import com.example.studentmanagement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/student")
@@ -24,107 +32,46 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private ClassroomService classroomService;
+
     @GetMapping("")
     public String getHome() {
-        return "index";
+        return "studentHomePage";
     }
 
-
-    @GetMapping("/all")
-    public String getAll(Model model, @RequestParam(required = false, defaultValue = "1") int pageNumber) {
-        Page<Student> studentPage = studentService.getAllStudent(pageNumber);
-        model.addAttribute("studentList", studentPage.getContent());
-        model.addAttribute("pageNumber", pageNumber);
-        model.addAttribute("totalPages", studentPage.getTotalPages());
-        return "getall";
+    @GetMapping("/classroom")
+    public ResponseEntity<List<StudentResponse>> getMyClassroom(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Student s = studentRepo.findByEmail(email);
+        List<Student> students = studentService.getStudentByClassID(s.getClassroom().getId());
+        List<StudentResponse> studentResponses = students.stream()
+                .map(student -> mapStudentToResponse(student))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(studentResponses, HttpStatus.OK);
     }
 
-    @GetMapping("/add")
-    public String showAddNew(Model model) {
-        model.addAttribute("student", new Student());
-        return "addnew";
+    @GetMapping("/classroom2")
+    public String getClassmate(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Student s = studentRepo.findByEmail(email);
+        List<Student> students = studentService.getStudentByClassID(s.getClassroom().getId());
+        model.addAttribute("studentList", students);
+        return "myclass";
     }
 
-    @PostMapping("/add")
-    public String addNew(@Valid Student student, BindingResult bd, Model model) {
-        if (bd.hasErrors()) {
-            return "addnew";
-        }
-        String firstname = student.getFirstname();
-        String lastname = student.getLastname();
-        int age = student.getAge();
-
-        Student s = Student.builder()
-                .firstname(firstname)
-                .lastname(lastname)
-                .age(age)
+    public StudentResponse mapStudentToResponse(Student student){
+        StudentResponse studentResponse = StudentResponse.builder()
+                .email(student.getEmail())
+                .age(student.getAge())
+                .fullname(student.getFirstname() + ' ' + student.getLastname())
+                .classroom(student.getClassroom().getClassName())
                 .build();
-
-
-        studentRepo.save(s);
-        return "redirect:/student/all";
+        return studentResponse;
     }
 
-    @GetMapping("/edit/{id}")
-    public String showStudentInfo(@PathVariable Integer id, Model model) {
-        Optional<Student> s = studentRepo.findById(id);
-        if (!s.isPresent()) {
-            throw new NoSuchElementException("Student is not found");
-        } else {
-            Student student = s.get();
-            model.addAttribute("student", student);
-            return "edit";
-        }
-    }
-
-    @PostMapping("/edit/{id}")
-    public String editStudentInfo(@PathVariable Integer id, @Valid Student student, BindingResult bd, Model model) {
-        Optional<Student> stu = studentRepo.findById(id);
-        if (!stu.isPresent()) {
-            throw new NoSuchElementException("Student is not found");
-        }
-        Student s = stu.get();
-        if (bd.hasErrors()) {
-            return "edit";
-        }
-        s.setFirstname(student.getFirstname());
-        s.setLastname(student.getLastname());
-        s.setAge(student.getAge());
-
-        studentRepo.save(s);
-        return "redirect:/student/all";
-    }
-
-    @PutMapping("/edit/{id}")
-    public String testapi(@PathVariable Integer id, @Valid Student student, BindingResult bd, Model model) {
-        Optional<Student> s = studentRepo.findById(id);
-        if (!s.isPresent()) {
-            throw new NoSuchElementException("Student is not found");
-        }
-        Student editStudent = s.get();
-
-        if (bd.hasErrors()) {
-            return "edit";
-        }
-        editStudent.setFirstname(student.getFirstname());
-        editStudent.setLastname(student.getLastname());
-        editStudent.setAge(student.getAge());
-
-        studentRepo.save(editStudent);
 
 
-        return "redirect:/student/all";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteStudent(@PathVariable Integer id, Model model) {
-        Optional<Student> s = studentRepo.findById(id);
-        if (s.isPresent()) {
-            studentRepo.deleteById(id);
-
-            return "redirect:/student/all";
-        } else {
-            throw new NoSuchElementException("Student is not found");
-        }
-    }
 }

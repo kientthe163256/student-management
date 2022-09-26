@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List all student</title>
+    <title>List all deleted student</title>
 </head>
 <body>
 <a href="/student">Back to home</a>
@@ -15,32 +15,29 @@
         <th>First Name</th>
         <th>Last Name</th>
         <th>Age</th>
-        <th>Action</th>
+        <th>Classroom</th>
     </tr>
     <tr th:each="student : ${studentList}">
         <td th:text="*{student.id}"></td>
         <td th:text="*{student.firstname}"></td>
         <td th:text="*{student.lastname}"></td>
         <td th:text="*{student.age}"></td>
-        <td>
-            <a th:href="@{/student/edit/{id}(id=${student.getId()})}">Edit</a>
-            <a th:href="@{/student/delete/{id}(id=${student.getId()})}">Delete</a>
-        </td>
+        <td th:text="${student.getClassroom().getClassName()}"></td>
     </tr>
 </table>
 <nav aria-label="Page navigation example" class="mt-6 flex justify-end">
     <ul class="inline-flex -space-x-px">
         <li>
-            <a th:if="${pageNumber - 1 >= 1}"  th:href="@{/student/all(pageNumber=${pageNumber - 1})}">Previous</a>
+            <a th:if="${pageNumber - 1 >= 1}"  th:href="@{/student/deleted(pageNumber=${pageNumber - 1})}">Previous</a>
             <a th:if="${pageNumber - 1 < 1}">Previous</a>
         </li>
         <li th:if="${pageNumber - 2 >= 1}">
-            <a  th:href="@{/student/all(pageNumber=${pageNumber - 2})}"
-               th:text="${pageNumber -2}">1</a>
+            <a  th:href="@{/student/deleted(pageNumber=${pageNumber - 2})}"
+                th:text="${pageNumber -2}">1</a>
         </li>
         <li th:if="${pageNumber - 1 >= 1}">
-            <a  th:href="@{/student/all(pageNumber=${pageNumber - 1})}"
-               th:text="${pageNumber - 1}">2</a>
+            <a  th:href="@{/student/deleted(pageNumber=${pageNumber - 1})}"
+                th:text="${pageNumber - 1}">2</a>
         </li>
         <li>
             <a href="#" aria-current="page"
@@ -48,16 +45,16 @@
         </li>
         <li th:if="${pageNumber + 1 <= totalPages}">
             <a
-               th:href="@{/student/all(pageNumber=${pageNumber + 1})}"
-               th:text="${pageNumber + 1}">4</a>
+                    th:href="@{/student/deleted(pageNumber=${pageNumber + 1})}"
+                    th:text="${pageNumber + 1}">4</a>
         </li>
         <li th:if="${pageNumber + 2 <= totalPages}">
             <a
-               th:href="@{/student/all(pageNumber=${pageNumber + 2})}"
-               th:text="${pageNumber + 2}">5</a>
+                    th:href="@{/student/deleted(pageNumber=${pageNumber + 2})}"
+                    th:text="${pageNumber + 2}">5</a>
         </li>
         <li>
-            <a th:if="${pageNumber + 1 <= totalPages}"  th:href="@{/student/all(pageNumber=${pageNumber + 1})}"
+            <a th:if="${pageNumber + 1 <= totalPages}"  th:href="@{/student/deleted(pageNumber=${pageNumber + 1})}"
             >Next</a>
             <a th:if="${pageNumber + 1 > totalPages}"
             >Next</a>

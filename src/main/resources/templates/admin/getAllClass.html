@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All classroom</title>
+</head>
+<body>
+<a href="/student">Back to home</a>
+<div th:if="${message}">
+    <span th:text="${message}"></span>
+</div>
+<table border="1px">
+    <tr>
+        <th>ID</th>
+        <th>ClassName</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="classroom : ${classroomList}">
+        <td th:text="*{classroom.id}"></td>
+        <td th:text="*{classroom.className}"></td>
+        <td th:text="*{classroom.description}"></td>
+        <td>
+            <button th:onclick="confirmDelete([[${classroom.id}]])">Delete</button>
+        </td>
+    </tr>
+</table>
+<script>
+    function confirmDelete(id) {
+        if (confirm("You sure want to delete class with id = "+id+"?")){
+            window.location = "/classroom/delete/" + id;
+        }
+    }
+</script>
+</body>
+</html>

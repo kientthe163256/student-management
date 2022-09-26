@@ -24,4 +24,17 @@ public class StudentServiceTest {
         Page<Student> studentPage = studentService.getAllStudent(1);
         assertThat(studentPage).isNotNull();
     }
+
+    @Test
+    public void testGetDeletedStudent(){
+//        Page<Student> students = studentService.getAllStudentWithFilter(1, true);
+        Page<Student> students = studentService.getAllStudentWithFilter(1, true);
+        assertThat(students).isNotNull();
+    }
+
+    @Test
+    public void testRecoverDeletedStudent(){
+        Student s = studentService.recoverDeletedStudent(21);
+        assertThat(s.isDeleted()).isFalse();
+    }
 }

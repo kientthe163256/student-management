@@ -5,15 +5,21 @@
     <title>Add new student</title>
 </head>
 <body>
-<a href="/student">Back to home</a>
+<a href="/admin/student">Back to home</a>
 <h1>Add a new student</h1>
-<form action="#" th:action="@{/student/add}" th:object="${student}" method="post">
+<form action="#" th:action="@{/admin/student/add}" th:object="${student}" method="post">
     <input type="text" name="firstname" placeholder="Enter first name"><br>
     <span th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">Full name error</span><br>
     <input type="text" name="lastname" placeholder="Enter last name"><br>
     <span th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Last name error</span><br>
     <input type="number" name="age" placeholder="Enter age"><br>
     <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</span><br>
+    <select name="classroom">
+        <option th:each="classroom : ${classroomList}"
+                th:text="${classroom.className}"
+                th:value="${classroom.id}"></option>
+
+    </select><br>
     <input type="submit" value="SAVE">
 </form>
 </body>
